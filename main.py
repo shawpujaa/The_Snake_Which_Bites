@@ -35,6 +35,11 @@ class Snake:
         self.x=[30]*length
         self.y=[30]*length
 
+    def increase_length(self):
+        self.length +=1   
+        self.x.append(-1)
+        self.y.append(-1) 
+
     def move_left(self):
         self.direction = 'left'
 
@@ -88,9 +93,27 @@ class Game:
         self.apple = Apple(self.surface)
         self.apple.draw()
 
+    def collision(self, x1, x2, y1, y2):
+        if (x1 >= x2 and x1 < x2 + size):
+            if (y1 >= y2 and y1 < y2 + size):
+                return True
+
+        return False        
+
     def play(self):
         self.snake.walk()
-        self.apple.draw()    
+        self.apple.draw()
+        self.display_score()
+        pygame.display.flip()  
+
+        if self.collision(self.snake.x[0], self.apple.x, self.snake.y[0], self.apple.y):
+            self.snake.increase_length()
+            self.apple.move()
+
+    def display_score(self):
+        font = pygame.font.SysFont('arial', 25)
+        score = font.render(f"Score: {self.snake.length-3}", True, (0, 0, 0))
+        self.surface.blit(score, (950, 10))
 
     def run(self):
         running = True
